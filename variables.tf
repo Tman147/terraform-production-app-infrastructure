@@ -1,0 +1,17 @@
+variable "aws_region" {
+  description = "AWS region to deploy resources"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "project_name" {
+  description = "Production app build"
+  type        = string
+  default     = "webapp"
+}
+
+variable "environment" {
+  description = "Environment (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+}
