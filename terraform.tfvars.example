@@ -1,0 +1,10 @@
+# Example configuration
+# Copy to terraform.tfvars and customize
+
+aws_region   = "us-east-1"
+project_name = "webapp"
+environment  = "dev"
+
+# Customize these for your deployment
+# container_image = "nginx:latest"
+# desired_count   = 2
