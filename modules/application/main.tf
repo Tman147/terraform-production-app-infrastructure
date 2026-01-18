@@ -150,15 +150,6 @@ data "aws_iam_role" "ecs_task_execution" {
   name = "ecsTaskExecutionRole"
 }
 
-# EXPLANATION:
-# - data source = reference existing IAM role (don't create new one)
-# - ecsTaskExecutionRole already exists in your AWS account
-# - This role has permissions to:
-#   - Pull Docker images from ECR/DockerHub
-#   - Write logs to CloudWatch
-#   - Access secrets (if needed)
-# - Lab accounts often restrict IAM role creation, so we use pre-existing roles
-
 # ==============================================================================
 # ECS CLUSTER
 # ==============================================================================
