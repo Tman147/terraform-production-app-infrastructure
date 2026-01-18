@@ -41,3 +41,8 @@ terraform.rc
 Thumbs.db
 desktop.ini
 
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
