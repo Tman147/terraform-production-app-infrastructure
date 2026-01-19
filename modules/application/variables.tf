@@ -30,7 +30,7 @@ variable "private_subnet_ids" {
 variable "container_image" {
   description = "Docker image to deploy"
   type        = string
-  default     = "nginx:latest"  # We'll use nginx as a simple demo app
+  default     = "nginx:latest"  
 }
 
 variable "container_port" {
@@ -48,18 +48,17 @@ variable "desired_count" {
 variable "cpu" {
   description = "CPU units for the task (256 = 0.25 vCPU)"
   type        = number
-  default     = 256  # Minimal for demo/learning
+  default     = 256  
 }
 
 variable "memory" {
   description = "Memory for the task in MB"
   type        = number
-  default     = 512  # 512MB - minimal for demo
+  default     = 512  
 }
 
 variable "allowed_cidr_blocks" {
   description = "CIDR blocks allowed to access the ALB"
   type        = list(string)
-  default     = ["0.0.0.0/0"]  # Allow from anywhere (for demo)
-  # In production, you'd restrict this to specific IPs
+  default     = ["0.0.0.0/0"]  # Allow from anywhere, but restrict in production
 }

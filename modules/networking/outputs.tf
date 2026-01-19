@@ -9,7 +9,7 @@ output "vpc_id" {
 output "public_subnet_ids" {
   description = "IDs of public subnets"
   value       = aws_subnet.public[*].id
-  # [*] means "all of them" - returns a list of all public subnet IDs
+  # [*] means - returns a list of all public subnet IDs
 }
 
 output "private_subnet_ids" {

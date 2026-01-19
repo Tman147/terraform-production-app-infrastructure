@@ -18,18 +18,13 @@ output "private_subnets" {
 }
 
 # ==============================================================================
-# Application Outputs - NEW!
+# Application Outputs
 # ==============================================================================
 
 output "application_url" {
   description = "URL to access the application"
   value       = "http://${module.application.alb_dns_name}"
 }
-
-# EXPLANATION:
-# - This is the URL you'll copy/paste into browser
-# - Formatted as clickable HTTP URL
-# - Example: http://webapp-dev-alb-123456.us-east-1.elb.amazonaws.com
 
 output "alb_dns_name" {
   description = "DNS name of the load balancer"
@@ -46,7 +41,20 @@ output "cloudwatch_log_group" {
   value       = module.application.cloudwatch_log_group_name
 }
 
-# EXPLANATION:
 # - These outputs make it easy to find your resources
 # - After terraform apply, you'll see all these values
-# - Copy the application_url and open in browser!
+# - Copy the application_url to the browser
+
+# ==============================================================================
+# Monitoring Outputs
+# ==============================================================================
+
+output "sns_topic_arn" {
+  description = "SNS topic ARN for alerts"
+  value       = module.monitoring.sns_topic_arn
+}
+
+output "cloudwatch_alarms" {
+  description = "List of CloudWatch alarm names"
+  value       = module.monitoring.alarm_names
+}

@@ -13,7 +13,6 @@ terraform {
   }
 }
 
-# EXPLANATION:
 # - Specifies which version of Terraform and AWS provider to use
 # - "~> 5.0" means "5.x" (any 5.x version, but not 6.0)
 
@@ -33,10 +32,9 @@ provider "aws" {
   }
 }
 
-# EXPLANATION:
 # - Configures AWS provider
 # - default_tags → Automatically tags ALL resources we create
-#   (Helpful for cost tracking and organization)
+
 
 # ==============================================================================
 # Networking Module
@@ -51,13 +49,11 @@ module "networking" {
   availability_zones = ["us-east-1a", "us-east-1b"]
 }
 
-# EXPLANATION:
 # - module "networking" → Calls our networking module
-# - source → Where the module code is located
 # - We pass in values for the module's variables
 
 # ==============================================================================
-# Application Module - NEW!
+# Application Module
 # ==============================================================================
 
 module "application" {
@@ -78,7 +74,6 @@ module "application" {
   allowed_cidr_blocks = ["0.0.0.0/0"]  # Allow access from anywhere
 }
 
-# EXPLANATION:
 # - module "application" → Calls our application module
 # - We pass networking outputs as inputs:
 #   - vpc_id → Where to create security groups
@@ -88,4 +83,21 @@ module "application" {
 #   - nginx:latest → Simple web server for demo
 #   - cpu/memory → Minimal for cost control
 #   - desired_count = 2 → High availability
+
+# ==============================================================================
+# Monitoring Module
+# ==============================================================================
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  project_name = var.project_name
+  environment  = var.environment
+  alert_email  = var.alert_email
+
+  cluster_name             = module.application.ecs_cluster_name
+  service_name             = module.application.ecs_service_name
+  alb_arn_suffix           = module.application.alb_arn_suffix
+  target_group_arn_suffix  = module.application.target_group_arn_suffix
+}
 
