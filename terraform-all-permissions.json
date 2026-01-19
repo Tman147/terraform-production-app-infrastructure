@@ -1,0 +1,155 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VPCNetworking",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ECSContainerOrchestration",
+      "Effect": "Allow",
+      "Action": [
+        "ecs:*",
+        "ecr:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "LoadBalancing",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AutoScaling",
+      "Effect": "Allow",
+      "Action": [
+        "application-autoscaling:*",
+        "autoscaling:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Monitoring",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:*",
+        "logs:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Notifications",
+      "Effect": "Allow",
+      "Action": [
+        "sns:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "StateManagement",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*",
+        "dynamodb:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "IAMManagement",
+      "Effect": "Allow",
+      "Action": [
+        "iam:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SecretsManagement",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:*",
+        "kms:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DatabaseRDS",
+      "Effect": "Allow",
+      "Action": [
+        "rds:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ServerlessFunctions",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EventDrivenAutomation",
+      "Effect": "Allow",
+      "Action": [
+        "events:*",
+        "scheduler:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "SSLCertificates",
+      "Effect": "Allow",
+      "Action": [
+        "acm:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DNS",
+      "Effect": "Allow",
+      "Action": [
+        "route53:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "WAF",
+      "Effect": "Allow",
+      "Action": [
+        "wafv2:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ServiceDiscovery",
+      "Effect": "Allow",
+      "Action": [
+        "servicediscovery:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "GlobalAccelerator",
+      "Effect": "Allow",
+      "Action": [
+        "globalaccelerator:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "STSAssumeRole",
+      "Effect": "Allow",
+      "Action": [
+        "sts:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

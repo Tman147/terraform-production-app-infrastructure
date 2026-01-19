@@ -58,3 +58,25 @@ output "cloudwatch_alarms" {
   description = "List of CloudWatch alarm names"
   value       = module.monitoring.alarm_names
 }
+
+# ==============================================================================
+# Auto-Scaling Outputs
+# ==============================================================================
+
+output "autoscaling_min_capacity" {
+  description = "Minimum number of tasks for auto-scaling"
+  value       = module.autoscaling.min_capacity
+}
+
+output "autoscaling_max_capacity" {
+  description = "Maximum number of tasks for auto-scaling"
+  value       = module.autoscaling.max_capacity
+}
+
+output "autoscaling_policies" {
+  description = "Auto-scaling policy names"
+  value = {
+    cpu_policy    = module.autoscaling.cpu_scaling_policy_name
+    memory_policy = module.autoscaling.memory_scaling_policy_name
+  }
+}

@@ -101,3 +101,22 @@ module "monitoring" {
   target_group_arn_suffix  = module.application.target_group_arn_suffix
 }
 
+# ==============================================================================
+# Auto-Scaling Module
+# ==============================================================================
+
+module "autoscaling" {
+  source = "./modules/autoscaling"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  cluster_name = module.application.ecs_cluster_name
+  service_name = module.application.ecs_service_name
+
+  min_capacity            = 2
+  max_capacity            = 10
+  target_cpu_utilization  = 70
+  scale_in_cooldown       = 300  # 5 minutes
+  scale_out_cooldown      = 60   # 1 minute
+}
