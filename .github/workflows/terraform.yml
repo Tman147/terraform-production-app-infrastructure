@@ -61,7 +61,6 @@ jobs:
       run: |
         terraform plan -no-color -out=tfplan -lock-timeout=5m 2>&1 | tee tfplan.txt  # ← CHANGED: Added lock timeout
         echo "plan_exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
-      continue-on-error: true
       timeout-minutes: 10  #  Step timeout
     
     - name: Terraform Apply
