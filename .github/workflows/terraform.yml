@@ -11,12 +11,16 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   TF_VERSION: '1.9.0'
+  TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}  
+  TF_VAR_aws_region: ${{ secrets.AWS_REGION }}    
+  TF_VAR_project_name: webapp                     
+  TF_VAR_environment: dev                         
 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # ← ADD THIS: Entire job timeout
+    timeout-minutes: 30  #  Entire job timeout
     
     defaults:
       run:
@@ -39,8 +43,8 @@ jobs:
         terraform_version: ${{ env.TF_VERSION }}
     
     - name: Terraform Init
-      run: terraform init -lock-timeout=5m  # ← CHANGED: Added lock timeout
-      timeout-minutes: 10  # ← ADD THIS: Step timeout
+      run: terraform init -lock-timeout=5m  #  Added lock timeout
+      timeout-minutes: 10  #  Step timeout
     
     - name: Terraform Format Check
       if: github.event_name == 'pull_request'
@@ -49,7 +53,7 @@ jobs:
     
     - name: Terraform Validate
       run: terraform validate
-      timeout-minutes: 5  # ← ADD THIS: Step timeout
+      timeout-minutes: 5  #  Step timeout
     
     - name: Terraform Plan
       id: plan
@@ -57,12 +61,12 @@ jobs:
         terraform plan -no-color -out=tfplan -lock-timeout=5m 2>&1 | tee tfplan.txt  # ← CHANGED: Added lock timeout
         echo "plan_exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
       continue-on-error: true
-      timeout-minutes: 10  # ← ADD THIS: Step timeout
+      timeout-minutes: 10  #  Step timeout
     
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -lock-timeout=5m tfplan  # ← CHANGED: Added lock timeout
-      timeout-minutes: 20  # ← ADD THIS: Step timeout (longer for apply)
+      run: terraform apply -auto-approve -lock-timeout=5m tfplan  #  Added lock timeout
+      timeout-minutes: 20  #  Step timeout (longer for apply)
     
     - name: Comment PR with Plan
       if: github.event_name == 'pull_request'
