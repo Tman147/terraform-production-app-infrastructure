@@ -21,3 +21,8 @@ output "vpc_cidr" {
   description = "CIDR block of the VPC"
   value       = aws_vpc.main.cidr_block
 }
+
+output "private_subnet_cidrs" {
+  description = "CIDR blocks of private subnets"
+  value       = aws_subnet.private[*].cidr_block
+}
