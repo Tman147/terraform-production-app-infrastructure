@@ -146,7 +146,7 @@ module "database" {
   db_password = module.secrets.db_password
 
   # Database configuration
-  postgres_version      = "15.4"
+  postgres_version      = "15"
   instance_class        = "db.t3.micro"
   allocated_storage     = 20
   max_allocated_storage = 100
