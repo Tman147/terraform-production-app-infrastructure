@@ -199,7 +199,38 @@ resource "aws_ecs_task_definition" "app" {
         }
       }
 
-      environment = []
+      # Environment variables - includes database connection info if provided
+      environment = concat(
+        # Database connection details (only if db_address is provided)
+        var.db_address != "" ? [
+          {
+            name  = "DB_HOST"
+            value = var.db_address
+          },
+          {
+            name  = "DB_PORT"
+            value = tostring(var.db_port)
+          },
+          {
+            name  = "DB_NAME"
+            value = var.db_name
+          }
+        ] : [],
+        # Any additional environment variables
+        var.environment_variables
+      )
+
+      # Secrets from AWS Secrets Manager (database credentials)
+      secrets = var.db_secret_arn != "" ? [
+        {
+          name      = "DB_USERNAME"
+          valueFrom = "${var.db_secret_arn}:username::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "${var.db_secret_arn}:password::"
+        }
+      ] : []
     }
   ])
 

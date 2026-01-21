@@ -94,3 +94,27 @@ output "db_secret_name" {
   description = "Name of database credentials secret"
   value       = module.secrets.secret_name
 }
+
+# ==============================================================================
+# Database outputs
+# ==============================================================================
+
+output "db_endpoint" {
+  description = "RDS database endpoint"
+  value       = module.database.db_endpoint
+}
+
+output "db_address" {
+  description = "RDS database hostname"
+  value       = module.database.db_address
+}
+
+output "db_port" {
+  description = "RDS database port"
+  value       = module.database.db_port
+}
+
+output "db_name" {
+  description = "Database name"
+  value       = module.database.db_name
+}

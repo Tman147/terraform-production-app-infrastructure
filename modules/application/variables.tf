@@ -62,3 +62,46 @@ variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = ["0.0.0.0/0"]  # Allow from anywhere, but restrict in production
 }
+
+# ==============================================================================
+# Database Connection Variables (Phase 3)
+# ==============================================================================
+
+variable "db_address" {
+  description = "Database hostname"
+  type        = string
+  default     = ""
+}
+
+variable "db_port" {
+  description = "Database port"
+  type        = number
+  default     = 5432
+}
+
+variable "db_name" {
+  description = "Database name"
+  type        = string
+  default     = ""
+}
+
+variable "db_secret_arn" {
+  description = "ARN of the database credentials secret"
+  type        = string
+  default     = ""
+}
+
+variable "environment_variables" {
+  description = "Additional environment variables for containers"
+  type        = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
+}
+
+variable "aws_region" {
+  description = "AWS region for CloudWatch logs"
+  type        = string
+  default     = "us-east-1"
+}
