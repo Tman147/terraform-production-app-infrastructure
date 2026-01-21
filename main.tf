@@ -155,7 +155,7 @@ module "database" {
   multi_az = true
 
   # Backups
-  backup_retention_days = 7
+  backup_retention_days = 1
 
   # Cost optimization for dev environment
   enable_performance_insights = false
