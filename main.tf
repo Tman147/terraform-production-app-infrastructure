@@ -120,3 +120,16 @@ module "autoscaling" {
   scale_in_cooldown       = 300  # 5 minutes
   scale_out_cooldown      = 60   # 1 minute
 }
+
+# ==============================================================================
+# Secrets Module
+# ==============================================================================
+
+module "secrets" {
+  source = "./modules/secrets"
+
+  project_name = var.project_name
+  environment  = var.environment
+  db_username  = "dbadmin"
+  db_name      = "appdb"
+}

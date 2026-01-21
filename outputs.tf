@@ -80,3 +80,17 @@ output "autoscaling_policies" {
     memory_policy = module.autoscaling.memory_scaling_policy_name
   }
 }
+
+# ==============================================================================
+# Secrets Outputs
+# ==============================================================================
+
+output "db_secret_arn" {
+  description = "ARN of database credentials secret"
+  value       = module.secrets.secret_arn
+}
+
+output "db_secret_name" {
+  description = "Name of database credentials secret"
+  value       = module.secrets.secret_name
+}
