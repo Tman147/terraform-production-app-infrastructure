@@ -20,3 +20,10 @@ variable "alert_email" {
   description = "Email address to receive CloudWatch alerts"
   type        = string
 }
+
+variable "container_image" {
+  description = "Docker image to deploy to ECS"
+  type        = string
+  default     = "nginx:latest"
+}
+

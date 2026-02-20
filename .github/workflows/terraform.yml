@@ -1,5 +1,4 @@
 name: 'Terraform CI/CD'
-
 on:
   push:
     branches:
@@ -11,63 +10,100 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   TF_VERSION: '1.9.0'
-  TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}  
-  TF_VAR_aws_region: ${{ secrets.AWS_REGION }}    
-  TF_VAR_project_name: webapp                     
-  TF_VAR_environment: dev                         
+  TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
+  TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+  TF_VAR_project_name: webapp
+  TF_VAR_environment: dev
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  docker:
+    name: 'Build & Push Docker Image'
     runs-on: ubuntu-latest
-    timeout-minutes: 30  #  Entire job timeout
-    
-    defaults:
-      run:
-        shell: bash
-    
+    timeout-minutes: 15
+    outputs:
+      image_uri: ${{ steps.build.outputs.image_uri }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-    
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, Tag, and Push Image
+      id: build
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: webapp-dev
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: docker
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: ${{ env.TF_VERSION }}
         terraform_wrapper: false
-    
+
     - name: Terraform Init
-      run: terraform init -lock-timeout=5m  #  Added lock timeout
-      timeout-minutes: 10  #  Step timeout
-    
+      run: terraform init -lock-timeout=5m
+      timeout-minutes: 10
+
     - name: Terraform Format Check
       if: github.event_name == 'pull_request'
       run: terraform fmt -check -recursive
       continue-on-error: true
-    
+
     - name: Terraform Validate
       run: terraform validate
-      timeout-minutes: 5  #  Step timeout
-    
+      timeout-minutes: 5
+
     - name: Terraform Plan
       id: plan
+      env:
+        TF_VAR_container_image: ${{ needs.docker.outputs.image_uri }}
       run: |
-        terraform plan -no-color -out=tfplan -lock-timeout=5m 2>&1 | tee tfplan.txt  # ← CHANGED: Added lock timeout
+        terraform plan -no-color -out=tfplan -lock-timeout=5m 2>&1 | tee tfplan.txt
         echo "plan_exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
-      timeout-minutes: 10  #  Step timeout
-    
+      timeout-minutes: 10
+
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -lock-timeout=5m tfplan  #  Added lock timeout
-      timeout-minutes: 20  #  Step timeout (longer for apply)
-    
+      env:
+        TF_VAR_container_image: ${{ needs.docker.outputs.image_uri }}
+      run: terraform apply -auto-approve -lock-timeout=5m tfplan
+      timeout-minutes: 20
+
     - name: Comment PR with Plan
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v7
@@ -77,17 +113,12 @@ jobs:
           const fs = require('fs');
           const plan = fs.readFileSync('tfplan.txt', 'utf8');
           const output = `#### Terraform Plan 📖
-          
           <details><summary>Show Plan</summary>
-          
           \`\`\`
           ${plan}
           \`\`\`
-          
           </details>
-          
           *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-          
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
